@@ -1,0 +1,52 @@
+
+# Name your project! Project names should contain only lowercase characters
+# and underscores. A good package name should reflect your organization's
+# name or the intended use of these models
+name: 'dbt_elt_testing'
+version: '1.0.0'
+config-version: 2
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'dbt-snowflake-db'
+
+# These configurations specify where dbt should look for different types of files.
+# The `source-paths` config, for example, states that models in this project can be
+# found in the "models/" directory. You probably won't need to change these!
+source-paths: ["models"]
+analysis-paths: ["analysis"]
+test-paths: ["tests"]
+data-paths: ["data"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"  # directory which will store compiled SQL files
+clean-targets:         # directories to be removed by `dbt clean`
+    - "target"
+    - "dbt_modules"
+
+# Configuring models
+# Full documentation: https://docs.getdbt.com/docs/configuring-models
+
+vars:
+  odate: 'YYYY-MM-DD'
+  default_null_variable: 0
+  target_schema: dbt
+  stg_schema: dbt_stg
+  db_name: DBT_DEMO_DB
+  target_table_name: CUSTOMER_TOTAL_TRUNC_LOAD
+##
+on-run-start:
+  - "create table if not exists dbt_stg.load_audit( model_name string, model_state string, model_exe_time timestamp_ltz)"
+
+# In this example config, we tell dbt to build all models in the example/ directory
+# as tables. These settings can be overridden in the individual model files
+# using the `{{ config(...) }}` macro.
+models:
+  dbt_elt_testing:
+      # Applies to all files under models/example/
+      transformation:
+          materialized: view
+          pre-hook: "insert into dbt_stg.load_audit values ( '{{this.name}}','executing model',current_timestamp )"
+      scd1:
+          materialized: view
+          pre-hook: "insert into dbt_stg.load_audit values ( '{{this.name}}','executing model',current_timestamp )"

@@ -1,0 +1,23 @@
+version: 2
+
+# Sources i.e Input table names/source names
+models:
+    - name: del_ins
+      description: "type 1 delete and insert"
+      columns:
+        - name: C_CUSTKEY
+          description: "The primary key for this table"
+          tests:
+              - unique
+              - not_null
+
+    - name: trunc_load
+      description: "type 1 trunc and load"
+      columns:
+        - name: C_CUSTKEY
+          description: "The primary key for this table"
+          tests:
+              - unique
+              - not_null
+
+    - name: universal_type1

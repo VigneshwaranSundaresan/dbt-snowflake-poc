@@ -1,0 +1,57 @@
+version: 2
+
+# Sources i.e Input table names/source names
+sources:
+  - name: snowflake_sample
+    database: snowflake_sample_data
+    schema: tpch_sf1
+    tables:
+      - name: orders
+      - name: customer
+  - name: snowflake_sample1
+    database: snowflake_sample_data
+    schema: tpcds_sf10tcl
+    tables:
+      - name: store
+
+models:
+    - name: data_prep_xfm1
+      description: "Extract Cuctomer Table Info"
+      columns:
+        - name: C_CUSTKEY
+          description: "The primary key for this table"
+          tests:
+              - unique
+              - not_null
+              - relationships:
+                    to: ref('data_join_xfm')
+                    field: C_CUSTKEY
+
+    - name: data_prep_xfm2
+      description: "Extract Total Order Info for Customer Table"
+      columns:
+        - name: O_CUSTKEY
+          description: "The primary key for this table"
+          tests:
+              - unique
+              - not_null
+
+    - name: data_join_xfm
+      description: "Join data_prep_xfm1 and data_prep_xfm2 for staging load and null handling"
+      columns:
+        - name: C_CUSTKEY
+          description: "The primary key for this table"
+          tests:
+              - unique
+              - not_null
+
+    - name: store_prep_xfm
+      description: "Prep store data for SCD Type 1 universal example"
+      columns:
+        - name: S_STORE_SK
+          description: "The primary key for this table"
+          tests:
+              - unique
+              - not_null
+
+    - name: scd_type2_xfm
