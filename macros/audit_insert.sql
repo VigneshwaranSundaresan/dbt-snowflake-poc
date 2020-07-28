@@ -13,6 +13,6 @@
     del_recs,
     update_recs,
     status
-    FROM INSERT INTO STAGE_DB.STAGE_SCHEMA.AUDIT_TABLE;
+    FROM STAGE_DB.STAGE_SCHEMA.AUDIT_TABLE;
 
 {% endmacro %}
