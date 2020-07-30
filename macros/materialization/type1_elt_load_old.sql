@@ -4,7 +4,7 @@ Thi smaterialization is to load the type 1 tables. The materialization currently
 2) Delete for a particular date and load the data
 3) Regular scd type 1 tables where history is ot maintained
 */
-{% materialization type1_elt_load, default %}
+{% materialization type1_elt_load_old, default %}
 
     {% set unique_key = config.get('unique_key',default='none') %}
     {%- set date_col = config.get('date_col_name',default='none') -%}
@@ -36,20 +36,12 @@ Thi smaterialization is to load the type 1 tables. The materialization currently
     {% endif %}
     -- Call for trunc and load
     {% if trunc_load_flag or del_insert_flag %}
-            {%- call statement('delete',fetch_result=true) -%}
-                {{ type1_del_test(current_table,date_col,date_value,trunc_load_flag,del_insert_flag) }}
-            {%- endcall -%}
+            {{ log("Calling Delete SQL ") }}
+            {{ type1_del(current_table,date_col,date_value,trunc_load_flag,del_insert_flag) }}
     {% endif %}
-    --
-    {%- set results = load_result('delete') -%}
-    {%- set delete_count = results['status'].split(" ")[1] | int -%}
-    --
-    {{ log("Delete count :" ~ delete_count) }}
     -- load the temp table
     {{ log("Temp table name is : " ~ tmp_table) }}
-    {%- call statement('copy',fetch_result=false) -%}
-        {{ create_temp_table(tmp_table, sql) }}
-    {%- endcall -%}
+    {{ create_temp_table(tmp_table, sql) }}
     {{ log("Temp table Created successfully") }}
     /*
     get columns from temp tables
@@ -64,12 +56,7 @@ Thi smaterialization is to load the type 1 tables. The materialization currently
     /*
     -- execute sql to insert into the table
     */
-    {%- call statement('insert',fetch_result=true) -%}
-        {{ type1_insert_test(current_table,tmp_table,target_cols_csv,temp_cols_csv) }}
-    {%- endcall -%}
-    {%- set results = load_result('insert') -%}
-    {%- set insert_count = results['status'].split(" ")[1] | int -%}
-    {{ log("insert count :" ~ insert_count) }}
+    {{ type1_insert(current_table,tmp_table,target_cols_csv,temp_cols_csv) }}
     --
     {% set model_name = this.name %}
     {{ log("Model name after sub :" ~ model_name ) }}
@@ -79,8 +66,8 @@ Thi smaterialization is to load the type 1 tables. The materialization currently
                       "'executing model'",
                       current_timestamp(),
                       current_timestamp(),
-                      insert_count,
-                      delete_count,
+                      0,
+                      0,
                       0,
                       "'SUCCESS'")}}
     {%- endcall -%}

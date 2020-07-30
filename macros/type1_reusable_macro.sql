@@ -34,16 +34,39 @@ This macro does only DELETE
 
     {{ log('Rows Deleted  :' ~ results_list[0]) }}
 
+    {{ return(results_list[0]) }}
+
+{% endmacro %}
+--
+{% macro type1_del_test(target_table_name,
+                        date_col_name,
+                        date_val,
+                        trunc_load_flag,
+                        del_insert_flag)
+                        %}
+
+    {{ log('del_insert_flag :' ~ del_insert_flag) }}
+    {{ log('date_col_name :' ~ date_col_name) }}
+    {{ log('date value :' ~ date_val) }}
+    {{ log('trunc_load_flag :' ~ trunc_load_flag) }}
+    {{ log('Target Table is :' ~ target_table_name) }}
+
+    DELETE FROM {{ target_table_name }}
+    {% if del_insert_flag is none %}
+        WHERE {{ date_col_name }} = '{{ date_val }}'
+    {% endif %}
+    ;
+
 {% endmacro %}
 /*
 Insert for Trunc and Load, Snapshot loade
 */
-{% macro type1_insert_test(target_table_name,
+{% macro type1_insert(target_table_name,
                       temp_table_name,
                       target_cols,
                       temp_cols)
                       %}
-                      
+
     {{ log('Target Table Name is :' ~ target_table_name) }}
     {{ log('Temp Table Name is :' ~ temp_table_name) }}
 
@@ -67,9 +90,11 @@ Insert for Trunc and Load, Snapshot loade
 
     {{ log('Rows Inserted  :' ~ results_list[0]) }}
 
+    {{ return(results_list[0]) }}
+
 {% endmacro %}
 --
-{% macro type1_insert(target_table_name,
+{% macro type1_insert_test(target_table_name,
                       temp_table_name,
                       target_cols,
                       temp_cols)

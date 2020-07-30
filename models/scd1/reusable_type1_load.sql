@@ -7,4 +7,4 @@ config(materialized='type1_elt_load',
 }}
 
 SELECT *
-FROM DBT_DEMO_DB.DBT.STORE_M_TEST_STG
+FROM DBT_DEMO_DB.DBT_STG.STORE_SAMPLE_STG
