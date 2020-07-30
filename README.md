@@ -39,3 +39,14 @@ grant select on all tables in database "DBT_DEMO_DB" to role DBT_ELT_RW;
 grant select on future tables in database "DBT_DEMO_DB" to role DBT_ELT_RW;
 grant select on all views in database "DBT_DEMO_DB" to role DBT_ELT_RW;
 grant select on future views in database "DBT_DEMO_DB" to role DBT_ELT_RW;
+
+run_commands:
+
+Please run in the same order
+
+dbt run --m transformation.store_prep_xfm
+dbt run --m scd1.reusable_type1_load --vars '{odate:2020-07-26}'
+
+AUDIT_SK	MODEL_NAME	MODEL_STATUS	MODEL_EXE_START_TIME	MODEL_EXE_END_TIME	INSERT_RECS	DEL_RECS	UPDATE_RECS	STATUS
+1	STORE_M_TEST_FINAL	executing model	2020-07-30 13:53:57.286 -0400	2020-07-30 13:53:57.286 -0400	1500	1500	0	SUCCESS
+2	STORE_M_TEST_FINAL	executing model	2020-07-30 13:55:12.878 -0400	2020-07-30 13:55:12.878 -0400	1500	1500	0	SUCCESS

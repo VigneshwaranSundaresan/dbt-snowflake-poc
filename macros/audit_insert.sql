@@ -8,7 +8,7 @@
   status) %}
 
     INSERT INTO DBT_DEMO_DB.DBT_STG.AUDIT_TABLE
-    SELECT max(audit_sk) + 1 as audit_sk,
+    SELECT max(NVL(audit_sk,0)) + 1 as audit_sk,
     '{{ model_name }}',
     {{ model_status }},
     convert_timezone('America/New_York', {{ model_exe_start_time }}::timestamp_ltz),
