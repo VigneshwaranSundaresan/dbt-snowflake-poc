@@ -1,7 +1,7 @@
 /*
 This macro does only DELETE
 */
-{% macro type1_del(target_table_name,
+{% macro type1_del_test(target_table_name,
                         date_col_name,
                         date_val,
                         trunc_load_flag,
@@ -38,30 +38,34 @@ This macro does only DELETE
 
 {% endmacro %}
 --
-{% macro type1_del_test(target_table_name,
+{% macro type1_del(target_table_name,
                         date_col_name,
                         date_val,
                         trunc_load_flag,
                         del_insert_flag)
                         %}
 
-    {{ log('del_insert_flag :' ~ del_insert_flag) }}
     {{ log('date_col_name :' ~ date_col_name) }}
     {{ log('date value :' ~ date_val) }}
     {{ log('trunc_load_flag :' ~ trunc_load_flag) }}
+    {{ log('del_insert_flag :' ~ del_insert_flag) }}
     {{ log('Target Table is :' ~ target_table_name) }}
 
-    DELETE FROM {{ target_table_name }}
-    {% if del_insert_flag is none %}
-        WHERE {{ date_col_name }} = '{{ date_val }}'
+    {% if trunc_load_flag %}
+        DELETE FROM {{ target_table_name }};
     {% endif %}
-    ;
+
+    {% if del_insert_flag %}
+        DELETE FROM {{ target_table_name }}
+        WHERE {{ date_col_name }} = '{{ date_val }}'
+        ;
+    {% endif %}
 
 {% endmacro %}
 /*
 Insert for Trunc and Load, Snapshot loade
 */
-{% macro type1_insert(target_table_name,
+{% macro type1_insert_test(target_table_name,
                       temp_table_name,
                       target_cols,
                       temp_cols)
@@ -94,7 +98,7 @@ Insert for Trunc and Load, Snapshot loade
 
 {% endmacro %}
 --
-{% macro type1_insert_test(target_table_name,
+{% macro type1_insert(target_table_name,
                       temp_table_name,
                       target_cols,
                       temp_cols)

@@ -4,13 +4,13 @@ Thi smaterialization is to load the type 1 tables. The materialization currently
 2) Delete for a particular date and load the data
 3) Regular scd type 1 tables where history is ot maintained
 */
-{% materialization type1_elt_load, default %}
+{% materialization type1_trunc_load, default %}
 
     {% set unique_key = config.get('unique_key',default='none') %}
     {%- set date_col = config.get('date_col_name',default='none') -%}
     {%- set date_value = config.get('date_val',default='none') -%} /* added for delete and insert */
-    {%- set del_insert_flag = config.get('del_insert_flag',default='none') -%}
-    {%- set trunc_load_flag = config.get('trunc_load_flag',default='none') -%}
+    {%- set del_insert_flag = config.get('del_insert_flag',default=false) -%}
+    {%- set trunc_load_flag = config.get('trunc_load_flag',default=false) -%}
     {%- set target_table_name = model['alias'] -%}
     --
     {%- set current_table = adapter.get_relation(database=database,
@@ -35,11 +35,9 @@ Thi smaterialization is to load the type 1 tables. The materialization currently
       {% do exceptions.warn("Unable to find the relation/table") %}
     {% endif %}
     -- Call for trunc and load
-    {% if trunc_load_flag or del_insert_flag %}
-            {%- call statement('delete',fetch_result=true) -%}
-                {{ type1_del_test(current_table,date_col,date_value,trunc_load_flag,del_insert_flag) }}
-            {%- endcall -%}
-    {% endif %}
+    {%- call statement('delete',fetch_result=true) -%}
+        {{ type1_del(current_table,date_col,date_value,trunc_load_flag,del_insert_flag) }}
+    {%- endcall -%}
     --
     {%- set results = load_result('delete') -%}
     {%- set delete_count = results['status'].split(" ")[1] | int -%}
@@ -65,7 +63,7 @@ Thi smaterialization is to load the type 1 tables. The materialization currently
     -- execute sql to insert into the table
     */
     {%- call statement('insert',fetch_result=true) -%}
-        {{ type1_insert_test(current_table,tmp_table,target_cols_csv,temp_cols_csv) }}
+        {{ type1_insert(current_table,tmp_table,target_cols_csv,temp_cols_csv) }}
     {%- endcall -%}
     {%- set results = load_result('insert') -%}
     {%- set insert_count = results['status'].split(" ")[1] | int -%}
