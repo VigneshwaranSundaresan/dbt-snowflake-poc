@@ -48,6 +48,7 @@ Please run in the same order
 
 dbt run --m transformation.store_prep_xfm
 dbt run --m scd1.reusable_type1_load --vars '{odate:2020-07-26}'
+dbt run --m scd1.type1_load --vars '{"odate" : "2020-07-26"}'
 
 AUDIT_SK	MODEL_NAME	MODEL_STATUS	MODEL_EXE_START_TIME	MODEL_EXE_END_TIME	INSERT_RECS	DEL_RECS	UPDATE_RECS	STATUS
 1	STORE_M_TEST_FINAL	executing model	2020-07-30 13:53:57.286 -0400	2020-07-30 13:53:57.286 -0400	1500	1500	0	SUCCESS

@@ -1,10 +1,13 @@
+{% set natural_key = dbt_utils.surrogate_key('S_STORE_ID','S_STORE_NAME') %}
+
 {{
-config(materialized='type1_trunc_load',
-      date_col_name='as_of_dt',
-      date_val=var('odate'),
-      trunc_load_flag=true,
-      alias='STORE_M_TEST_FINAL')
+config(
+materialized='universal_type1_load',
+alias='STORE_TYPE1_COMMON_TESTING',
+unique_key=natural_key
+)
 }}
 
-SELECT *
-FROM DBT_DEMO_DB.DBT_STG.STORE_SAMPLE_STG
+select *,
+to_date('{{ var('odate') }}') as AS_OF_DT
+FROM {{ ref('store_prep_xfm') }}

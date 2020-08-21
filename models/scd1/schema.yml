@@ -20,4 +20,6 @@ models:
               - unique
               - not_null
 
-    - name: universal_type1
+    - name: type1_load
+    - name: reusable_del_insert
+    - name: reusable_type1_trunc_load

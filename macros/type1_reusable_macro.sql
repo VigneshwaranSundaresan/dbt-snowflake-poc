@@ -38,7 +38,7 @@ This macro does only DELETE
 
 {% endmacro %}
 --
-{% macro type1_del(target_table_name,
+{% macro type1_delete(target_table_name,
                         date_col_name,
                         date_val,
                         trunc_load_flag,
@@ -113,3 +113,20 @@ Insert for Trunc and Load, Snapshot loade
     ;
 
 {% endmacro %}
+--
+{% macro universal_type1_delete(target_table_name,
+                                tmp_table,
+                                unique_key)
+                                %}
+    {{ log('Target Table Name is :' ~ target_table_name) }}
+    {{ log('Temp Table Name is :' ~ tmp_table) }}
+    {{ log('Unique Key is :' ~ unique_key) }}
+    --
+    DELETE FROM {{ target_table_name }}
+    WHERE {{ unique_key }}
+    IN ( SELECT {{ unique_key }}
+         FROM  {{ tmp_table }}
+       );
+
+{% endmacro %}
+--
