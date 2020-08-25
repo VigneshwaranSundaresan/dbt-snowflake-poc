@@ -2,9 +2,11 @@
 
     {%- set unique_key = config.get('unique_key',default='none') -%}
     {%- set target_table_name = model['alias'] -%}
+    {%- set model_start_time = run_started_at.astimezone(modules.pytz.timezone("America/Chicago")) -%}
     --
     {{ log("Unique Key is/are : " ~ unique_key) }}
     {{ log("Target Table Name : " ~ target_table_name) }}
+    {{ log("Model Start Time : " ~ model_start_time) }}
     --
     {%- set current_table = adapter.get_relation(database=database,
                                                     schema=schema,
@@ -15,7 +17,6 @@
                                            schema=schema,
                                            identifier=tmp_identifier,
                                            type='table') -%}
-    --
     --
     {%- set current_relation_exists_as_table = (current_table is not none and current_table.is_table) -%}
     {{ log("Current Relation type/status : " ~ current_relation_exists_as_table) }}
@@ -38,6 +39,7 @@
     get columns from temp tables
     */
     {% set tmp_columns = adapter.get_columns_in_relation(tmp_table) %}
+    {{ log("Just Checking :" ~ tmp_columns) }}
     {% set target_columns = adapter.get_columns_in_relation(current_table) %}
     {%- set temp_cols_csv = tmp_columns | map(attribute="name") | join(', ') -%}
     {%- set target_cols_csv = target_columns | map(attribute="name") | join(', ') -%}
@@ -67,7 +69,7 @@
     {%- call statement('main',fetch_result=false) -%}
       {{ audit_insert(model_name,
                       "'executing model'",
-                      current_timestamp(),
+                      model_start_time,
                       current_timestamp(),
                       insert_count,
                       delete_count,
