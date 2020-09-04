@@ -11,7 +11,7 @@
     {% set model_name = this.name %}
     {{ log("Model name after sub :" ~ model_name ) }}
     --
-    {% if unique_key is none %}
+    {% if natural_keys is none %}
       {% do exceptions.warn("Unique key cannot be empty for SCD Type 2") %}
       {%- call statement('main',fetch_result=false) -%}
         {{ audit_insert(model_name,
