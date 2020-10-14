@@ -46,8 +46,26 @@ run_commands:
 
 Please run in the same order
 
+Xfm Loads:
+
 dbt run --m transformation.store_prep_xfm
-dbt run --m scd1.reusable_type1_load --vars '{odate:2020-07-26}'
+dbt run --m transformation.data_prep_xfm1
+dbt run --m transformation.data_prep_xfm2
+dbt run --m transformation.data_join_xfm
+dbt run --m transformation.scd_type2_xfm
+
+SCD Load:
+
+
+dbt run --m scd1.reusable_type1_load --vars '{"odate" : "2020-07-26"}'
+dbt run --m scd1.reusable_del_insert --vars '{"odate" : "2020-07-26"}'
+dbt run --m scd1.reusable_type1_trunc_load
+dbt snapshot
+dbt run --m scd2.final_scd2_load
+
+
+
+
 dbt run --m scd1.type1_load --vars '{"odate" : "2020-07-26"}'
 dbt run --m scd1.reusable_type1_load --vars '{"odate" : "2020-08-21"}'
 

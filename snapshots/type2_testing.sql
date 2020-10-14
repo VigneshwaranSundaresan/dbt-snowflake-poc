@@ -6,6 +6,7 @@ config(
       target_schema='snapshots',
       unique_key='S_STORE_SK',
       strategy='timestamp',
+      alias='STORE_DIM_TESTING_STG',
       updated_at='VALID_FROM_DT',
       )
 }}

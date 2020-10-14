@@ -8,4 +8,4 @@ config(materialized='type1_trunc_load',
 
 SELECT *,
 to_date('{{ var('odate') }}') as AS_OF_DT
-FROM DBT_DEMO_DB.DBT_STG.STORE_SAMPLE_STG
+FROM {{ ref('data_join_xfm') }}

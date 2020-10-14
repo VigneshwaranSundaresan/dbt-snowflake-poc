@@ -5,4 +5,4 @@ config(materialized='type1_trunc_load',
 }}
 
 SELECT *
-FROM DBT_DEMO_DB.DBT_STG.STORE_SAMPLE_STG
+FROM {{ ref('data_prep_xfm2') }}
